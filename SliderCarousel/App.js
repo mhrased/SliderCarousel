@@ -1,15 +1,34 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FlatList, Text, View, Dimensions, Image, Animated} from 'react-native'
 
 const wt = Dimensions.get("window").width
 const ht = Dimensions.get("window").height
 
+let flatList
+
+function infiniteScroll(dataList){
+    const numberOfData = dataList.length
+    let scrollValue = 0, scrolled = 0
+
+    setInterval(function() {
+        scrolled ++
+        if(scrolled < numberOfData)
+        scrollValue = scrollValue + (ITEM_WIDTH + 20)
+
+        else{
+            scrollValue = 0
+            scrolled = 0
+        }
+
+        this.flatList.scrollToOffset({ animated: true, offset: scrollValue})
+        
+    }, 3000)
+}
+
 const ITEM_WIDTH = (wt * 0.72)
 const ITEM_HEIGHT = (ht / 3)
 export default function App () {
-  const scrollX = React.useRef(new Animated.Value(0)).current;
-
-  state = {
+  const state = {
     slider: [
       {
         key : 'left-spacer'
@@ -50,11 +69,23 @@ export default function App () {
   ]
   }
 
+  const scrollX = React.useRef(new Animated.Value(0)).current;
+  // let position = Animated.divide(scrollX, width)
+  const [dataList, setDataList] = useState(state.slider)
+
+  useEffect(()=> {
+      setDataList(state.slider)
+      infiniteScroll(dataList)
+  })
+
+  
+
   // render() {
     return (
       <View style={{flex:1}}>
         <View>
         <Animated.FlatList
+            ref = {(flatList) => {this.flatList = flatList}}
             horizontal
             snapToInterval={(ITEM_WIDTH + 20)}
             decelerationRate={0}
@@ -99,7 +130,7 @@ export default function App () {
         </View>
 
 
-        <View style={{marginVertical:30, alignItems:'center'}}>
+        {/* <View style={{marginVertical:30, alignItems:'center'}}>
         <Animated.FlatList
             horizontal
             snapToInterval={(ITEM_WIDTH + 20)}
@@ -141,7 +172,7 @@ export default function App () {
               return <Animated.View style={{opacity,width:10, height:10,marginHorizontal:4, borderRadius:100, backgroundColor: '#333',transform:[{scale}]}} />
             }}
             keyExtractor={(item) => item.id} />
-        </View>
+        </View> */}
 
         
       </View>
