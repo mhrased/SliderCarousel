@@ -1,114 +1,150 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, { Component } from 'react'
+import { FlatList, Text, View, Dimensions, Image, Animated} from 'react-native'
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+const wt = Dimensions.get("window").width
+const ht = Dimensions.get("window").height
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const ITEM_WIDTH = (wt * 0.72)
+const ITEM_HEIGHT = (ht / 3)
+export default function App () {
+  const scrollX = React.useRef(new Animated.Value(0)).current;
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+  state = {
+    slider: [
+      {
+        key : 'left-spacer'
+      },
+      {
+          title: 'Beautiful and dramatic Antelope Canyon',
+          subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+          illustration: 'https://i.imgur.com/UYiroysl.jpg'
+      },
+      {
+          title: 'Earlier this morning, NYC',
+          subtitle: 'Lorem ipsum dolor sit amet',
+          illustration: 'https://i.imgur.com/UPrs1EWl.jpg'
+      },
+      {
+          title: 'White Pocket Sunset',
+          subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
+          illustration: 'https://i.imgur.com/MABUbpDl.jpg'
+      },
+      {
+          title: 'Acrocorinth, Greece',
+          subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+          illustration: 'https://i.imgur.com/KZsmUi2l.jpg'
+      },
+      {
+          title: 'The lone tree, majestic landscape of New Zealand',
+          subtitle: 'Lorem ipsum dolor sit amet',
+          illustration: 'https://i.imgur.com/2nCt3Sbl.jpg'
+      },
+      {
+          title: 'Middle Earth, Germany',
+          subtitle: 'Lorem ipsum dolor sit amet',
+          illustration: 'https://i.imgur.com/lceHsT6l.jpg'
+      },
+      {
+        key : 'right-spacer'
+      }
+  ]
+  }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+  // render() {
+    return (
+      <View style={{flex:1}}>
+        <View>
+        <Animated.FlatList
+            horizontal
+            snapToInterval={(ITEM_WIDTH + 20)}
+            decelerationRate={0}
+            bounces={false}
+            keyExtractor={({item,index}) => item.index.toString() }
+            onScroll={Animated.event(
+              [{nativeEvent : { contentOffset :{x : scrollX}}}],
+              {useNativeDriver : true}
+            )}
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            data={state.slider}
+            renderItem={(item) => {
+              if(!item.item.title){
+                return (
+                  // <View style={{width: (ITEM_WIDTH / 6)}} />
+                  <View key={item.item.title} style={{backgroundColor: '#eee',height:ITEM_HEIGHT, width:(ITEM_WIDTH / 8),marginRight:item.item.key == 'left-spacer' ? 10 : 0,marginLeft:item.item.key == 'left-spacer' ? 0 : 10,marginTop:50, justifyContent:'center', paddingHorizontal:20, opacity:.5,transform:[{scaleY:.8}]}}>
+                    <Image style={{width : (ITEM_WIDTH / 8), height: ITEM_HEIGHT, resizeMode:'cover', position:'absolute',top:0, left:0, backgroundColor: 'rgba(0,0,0,0.4)', borderTopRightRadius: item.item.key == 'left-spacer' ? 10 : 0, borderBottomRightRadius:item.item.key == 'left-spacer' ? 10 : 0,borderTopLeftRadius:item.item.key == 'left-spacer' ? 0 : 10, borderBottomLeftRadius:item.item.key == 'left-spacer' ? 0 : 10}} source={{uri : item.item.key == 'left-spacer' ? 'https://i.imgur.com/lceHsT6l.jpg' : 'https://i.imgur.com/UYiroysl.jpg'}} />
+                    <Text style={{color:'#FFF'}}></Text>
+                  </View>
+                )
+              }
+              const inputRange = [
+                (item.index - 2) * ITEM_WIDTH,
+                (item.index -1) * ITEM_WIDTH,
+                (item.index) * ITEM_WIDTH,
+              ]
+              const scaleY = scrollX.interpolate({
+                inputRange,
+                outputRange : [.8, 1, .8]
+              })
+              const opacity = scrollX.interpolate({
+                inputRange,
+                outputRange : [.5, 1, .5]
+              })
+              return <Animated.View key={item.item.title} style={{backgroundColor: '#eee',height:ITEM_HEIGHT, width:ITEM_WIDTH,marginHorizontal:10,marginTop:50, justifyContent:'center', paddingHorizontal:20, opacity, transform:[{scaleY}]}}>
+                <Image style={{width : ITEM_WIDTH, height: ITEM_HEIGHT, resizeMode:'cover', position:'absolute',top:0, left:0, backgroundColor: 'rgba(0,0,0,0.4)', borderRadius:10}} source={{uri : item.item.illustration}} />
+                <Text style={{color:'#FFF'}}>{item.item.title}</Text>
+              </Animated.View>
+            }}
+            keyExtractor={(item) => item.id} />
+        </View>
 
-export default App;
+
+        <View style={{marginVertical:30, alignItems:'center'}}>
+        <Animated.FlatList
+            horizontal
+            snapToInterval={(ITEM_WIDTH + 20)}
+            decelerationRate={0}
+            bounces={false}
+            keyExtractor={({item,index}) => item.index.toString() }
+            onScroll={Animated.event(
+              [{nativeEvent : { contentOffset :{x : scrollX}}}],
+              {useNativeDriver : true}
+            )}
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={16}
+            data={state.slider}
+            renderItem={(item) => {
+              if(!item.item.title){
+                return null
+              }
+              const inputRange = [
+                (item.index - 4) * ITEM_WIDTH,
+                (item.index - 3) * ITEM_WIDTH,
+                (item.index - 2) * ITEM_WIDTH,
+
+                (item.index - 1) * ITEM_WIDTH,
+
+                (item.index) * ITEM_WIDTH,
+                (item.index + 1) * ITEM_WIDTH,
+                (item.index + 2) * ITEM_WIDTH,
+              ]
+
+              const scale = scrollX.interpolate({
+                inputRange,
+                outputRange : [.7,.7,.7, 1, .7,.7,.7]
+              })
+              const opacity = scrollX.interpolate({
+                inputRange,
+                outputRange : [.5,.5,.5, 1, .5,.5,.5]
+              })
+              
+              return <Animated.View style={{opacity,width:10, height:10,marginHorizontal:4, borderRadius:100, backgroundColor: '#333',transform:[{scale}]}} />
+            }}
+            keyExtractor={(item) => item.id} />
+        </View>
+
+        
+      </View>
+    )
+  // }
+}
