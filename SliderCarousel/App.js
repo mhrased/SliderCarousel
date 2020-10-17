@@ -7,7 +7,7 @@ const ht = Dimensions.get("window").height
 let flatList
 
 function infiniteScroll(dataList){
-    const numberOfData = dataList.length
+    const numberOfData = (dataList.length - 1)
     let scrollValue = 0, scrolled = 0
 
     setInterval(function() {
@@ -22,11 +22,11 @@ function infiniteScroll(dataList){
 
         this.flatList.scrollToOffset({ animated: true, offset: scrollValue})
         
-    }, 3000)
+    }, 1500)
 }
 
 const ITEM_WIDTH = (wt * 0.72)
-const ITEM_HEIGHT = (ht / 3)
+const ITEM_HEIGHT = (ht / 4)
 export default function App () {
   const state = {
     slider: [
