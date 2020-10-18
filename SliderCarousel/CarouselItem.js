@@ -9,13 +9,16 @@ let flatList1
 const scrollX = new Animated.Value(0)
 
 export default class CarouselItem extends Component {
+    let 
     state = {
         currentItem : 1,
         scrollValue : 0,
     }
 
     componentDidMount = () =>{
-        this.infinitScroll()
+        if(this.props.auto){
+            this.infinitScroll()
+        }
     }
 
     infinitScroll = ()=>{
@@ -47,10 +50,11 @@ export default class CarouselItem extends Component {
     }
 
     render() {
+        
         if(this.props.data.length == 0){
             return null
         }else{
-            let {bgColor,paddingContainer,item_border,item_width,item_height,dot_margin,outputScaleY,outputOpacity,spacer,item_font,justifyText,alignText} = this.props
+            let {bgColor,paddingContainer,item_border,item_width,item_height,dot_margin,outputScaleY,outputOpacity,item_font,justifyText,alignText,space_slider, show_dots,data} = this.props
             return (
                 <View style={{backgroundColor: bgColor == null ? null : bgColor,paddingVertical:paddingContainer}}>
                     <View>
@@ -69,12 +73,12 @@ export default class CarouselItem extends Component {
                             showsHorizontalScrollIndicator={false}
                             scrollEventThrottle={16}
                             keyExtractor = {(item,index) => `${index}-slideItem`}
-                            data={this.props.data}
+                            data={data}
                             renderItem={(item) => {
                                 if(!item.item.title){
                                     return (
-                                        <View key={item.item.title} style={{height:item_height, width:spacer,marginRight:item.item.key == 'left-spacer' ? 10 : 0,marginLeft:item.item.key == 'left-spacer' ? 0 : 10, justifyContent:'center', opacity:.5,transform:[{scaleY:.9}]}}>
-                                            <Image style={{width : spacer, height: item_height, resizeMode:'cover', position:'absolute',top:0, left:0, backgroundColor: 'rgba(0,0,0,0.4)', borderTopRightRadius: item.item.key == 'left-spacer' ? item_border : 0, borderBottomRightRadius:item.item.key == 'left-spacer' ? item_border : 0,borderTopLeftRadius:item.item.key == 'left-spacer' ? 0 : item_border, borderBottomLeftRadius:item.item.key == 'left-spacer' ? 0 : item_border}} source={{uri : item.item.key == 'left-spacer' ? 'https://i.imgur.com/lceHsT6l.jpg' : 'https://i.imgur.com/UYiroysl.jpg'}} />
+                                        <View key={item.item.title} style={{height:item_height, width:(wt - (item_width + (space_slider * 4))) /2,marginRight:item.item.key == 'left-spacer' ? space_slider : 0,marginLeft:item.item.key == 'left-spacer' ? 0 : space_slider, justifyContent:'center', opacity:.5,transform:[{scaleY:.9}]}}>
+                                            <Image style={{width : (wt - (item_width + (space_slider * 4))) /2 , height: item_height, resizeMode:'cover', position:'absolute',top:0, left:0, backgroundColor: 'rgba(0,0,0,0.4)', borderTopRightRadius: item.item.key == 'left-spacer' ? item_border : 0, borderBottomRightRadius:item.item.key == 'left-spacer' ? item_border : 0,borderTopLeftRadius:item.item.key == 'left-spacer' ? 0 : item_border, borderBottomLeftRadius:item.item.key == 'left-spacer' ? 0 : item_border}} source={{uri : item.item.key == 'left-spacer' ? data[data.length -2].illustration : data[1].illustration}} />
                                             <Text style={{color:'#FFF'}}></Text>
                                         </View>
                                     )
@@ -95,7 +99,7 @@ export default class CarouselItem extends Component {
                                 })
 
                                 return (
-                                    <Animated.View key={item.item.title} style={{height:item_height, width:item_width,marginHorizontal:10, justifyContent:'center', paddingHorizontal:20, opacity,transform:[{scaleY}]}}>
+                                    <Animated.View key={item.item.title} style={{height:item_height, width:item_width,marginHorizontal:space_slider, justifyContent:'center', paddingHorizontal:20, opacity,transform:[{scaleY}]}}>
                                         <Image style={{width : item_width, height: item_height, resizeMode:'cover', position:'absolute',top:0, left:0, backgroundColor: 'rgba(0,0,0,0.4)', borderRadius:item_border}} source={{uri : item.item.illustration}} />
                                         <View style={{position: 'absolute',backgroundColor:'rgba(0,0,0,0.4)', top:0, left:0, width:item_width,height:item_height, borderRadius:item_border,justifyContent:justifyText, alignItems:alignText}}>
                                             <Text style={{color:'#FFF', fontSize:item_font}}>
@@ -107,7 +111,9 @@ export default class CarouselItem extends Component {
                                 }} />
                     </View>
 
-                    <View style={{alignItems:'center', marginTop:dot_margin}}>
+                    {
+                        show_dots ?
+                        <View style={{alignItems:'center', marginTop:dot_margin}}>
                         <FlatList
                             horizontal
                             snapToInterval={(item_width + 20)}
@@ -126,6 +132,9 @@ export default class CarouselItem extends Component {
                             data={this.props.data}
                             />
                     </View>
+                    :
+                    null
+                    }
                 </View>
             )
         }
